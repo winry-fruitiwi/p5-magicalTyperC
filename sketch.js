@@ -4,13 +4,15 @@
  *
  *
  */
-let font
+let font, scryfall
 let instructions
 
 
 function preload() {
     font = loadFont('data/consola.ttf')
+    scryfall = loadJSON('json/scryfall-snc.json')
 }
+
 
 
 function setup() {
@@ -24,6 +26,10 @@ function setup() {
     instructions.html(`<pre>
         [1,2,3,4,5] → no function
         z → freeze sketch</pre>`)
+
+    for (let i = 0; i < Object.keys(scryfall["data"]).length; i++) {
+        print(scryfall["data"][i].name)
+    }
 }
 
 
