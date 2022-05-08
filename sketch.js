@@ -28,7 +28,16 @@ function setup() {
         z → freeze sketch</pre>`)
 
     for (let i = 0; i < Object.keys(scryfall["data"]).length; i++) {
-        print(scryfall["data"][i].name)
+        // switch between border_crop and art_crop for different aspects of art.
+        // print(`${scryfall["data"][i].name} ${scryfall["data"][i]["image_uris"].border_crop}`)
+        if (scryfall["data"][i].flavor_text !== undefined) {
+            print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
+${scryfall["data"][i].oracle_text}
+${scryfall["data"][i].flavor_text}`)
+        } else {
+            print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
+${scryfall["data"][i].oracle_text}`)
+        }
     }
 }
 
