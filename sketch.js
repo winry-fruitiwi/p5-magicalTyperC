@@ -28,16 +28,33 @@ function setup() {
         z → freeze sketch</pre>`)
 
     for (let i = 0; i < Object.keys(scryfall["data"]).length; i++) {
+        // a string of data that contains scryfall data.
+        let typingText = scryfall["data"][i].name
+        typingText += " " + scryfall["data"][i].mana_cost
+        typingText += "\n" + scryfall["data"][i].oracle_text
+
+        if (scryfall["data"][i].flavor_text !== undefined) {
+            typingText += "\n" + scryfall["data"][i].flavor_text
+        }
+
+        if (scryfall["data"][i].power !== undefined &&
+            scryfall["data"][i].toughness !== undefined) {
+            typingText += "\n" + scryfall["data"][i].power + "/" + scryfall["data"][i].toughness
+        }
+
+        print(typingText)
+
         // switch between border_crop and art_crop for different aspects of art.
         // print(`${scryfall["data"][i].name} ${scryfall["data"][i]["image_uris"].border_crop}`)
-        if (scryfall["data"][i].flavor_text !== undefined) {
-            print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
-${scryfall["data"][i].oracle_text}
-${scryfall["data"][i].flavor_text}`)
-        } else {
-            print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
-${scryfall["data"][i].oracle_text}`)
-        }
+        // This is a very messy loop and I'll only keep it here until I commit.
+//         if (scryfall["data"][i].flavor_text !== undefined) {
+//             print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
+// ${scryfall["data"][i].oracle_text}
+// ${scryfall["data"][i].flavor_text}`)
+//         } else {
+//             print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
+// ${scryfall["data"][i].oracle_text}`)
+//         }
     }
 }
 
