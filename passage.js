@@ -7,13 +7,28 @@ class Passage {
         // a list of boolean values marking if the character was correct
         this.correctList = []
 
-        // these are the comments!
+        // these are the constants!
+
+        // the top margin for all text and the bounding box.
+        this.TOP_MARGIN = 50
+
+        // the x-position of the bounding box
+        this.SIDE_MARGIN = 50
+
+        // the place where the text starts relative to the bounding box
+        this.TEXT_START_X = 50
+
+        // this is where the text starts. Ideally I'd like 50 pixels of space.
+        this.TEXT_START = new p5.Vector(
+            this.TOP_MARGIN - textAscent(),
+            this.SIDE_MARGIN + this.TEXT_START_X
+        )
     }
 
 
     // displays the passage
     render() {
-        // this is a shell, so I'm only initiating the variables and functions.
+
     }
 
 

@@ -6,7 +6,8 @@
  */
 let font, scryfall
 let instructions
-
+// the passage
+let passage
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -27,6 +28,8 @@ function setup() {
         [1,2,3,4,5] → no function
         z → freeze sketch</pre>`)
 
+    passage = new Passage("hi!")
+
     for (let i = 0; i < Object.keys(scryfall["data"]).length; i++) {
         // a string of data that contains scryfall data.
         let typingText = scryfall["data"][i].name
@@ -46,15 +49,6 @@ function setup() {
 
         // switch between border_crop and art_crop for different aspects of art.
         // print(`${scryfall["data"][i].name} ${scryfall["data"][i]["image_uris"].border_crop}`)
-        // This is a very messy loop and I'll only keep it here until I commit.
-//         if (scryfall["data"][i].flavor_text !== undefined) {
-//             print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
-// ${scryfall["data"][i].oracle_text}
-// ${scryfall["data"][i].flavor_text}`)
-//         } else {
-//             print( `${scryfall["data"][i].name} ${scryfall["data"][i].mana_cost}
-// ${scryfall["data"][i].oracle_text}`)
-//         }
     }
 }
 
