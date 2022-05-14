@@ -83,6 +83,11 @@ class Passage {
                     continue
                 }
             }
+            if (currentChar === "\n") {
+                this.#wrapCursor(cursor)
+                this.#wrapCursor(cursor)
+                continue
+            }
 
             // increment our cursor's x-position.
             cursor.x += textWidth(currentChar)

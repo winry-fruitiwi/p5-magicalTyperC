@@ -14,6 +14,62 @@ function preload() {
     scryfall = loadJSON('json/scryfall-snc.json')
 }
 
+function initializeCardList() {
+    // a list of all Magic cards in the scryfall data set
+    let cardList = []
+
+    for (let i = 0; i < Object.keys(scryfall["data"]).length; i++) {
+        let currentData = scryfall["data"][i]
+
+        // an object composing of all the card data I'll need, and you can
+        // just access its values!
+        let card = {
+            'name': currentData['name'],
+            'mana_cost': currentData['mana_cost'],
+            'type_line': currentData['type_line'],
+            'oracle_text': currentData['oracle_text']
+        }
+
+        // a string of data that contains scryfall data.
+        let typingText = currentData['name']
+        typingText += " " + currentData['mana_cost']
+        typingText += "\n" + currentData['type_line']
+        typingText += "\n" + currentData['oracle_text']
+
+        if (currentData['flavor_text'] !== undefined) {
+            typingText += "\n" + currentData['flavor_text']
+            card['flavor_text'] = currentData['flavor_text']
+        }
+
+        if (currentData['power'] !== undefined &&
+            currentData['toughness'] !== undefined) {
+            typingText += "\n" + currentData['power']
+            typingText += "/" + currentData['toughness']
+            card['power'] = currentData['power']
+            card['toughness'] = currentData['toughness']
+        }
+
+        // typingText += "\n" + currentData['collector_number']
+        card['collector_number'] = currentData['collector_number']
+
+        card["typing_text"] = typingText
+
+        print(typingText)
+
+        cardList.push(card)
+    }
+
+    return cardList
+}
+
+// a sorting method that compares two cards' collector ID.
+function sortByCollectorID(a, b) {
+    let aCollectorID = a['collector_number']
+    let bCollectorID = b['collector_number']
+
+    // subtract the two IDs and return the result
+    return aCollectorID - bCollectorID
+}
 
 function setup() {
     let cnv = createCanvas(900, 600)
@@ -27,31 +83,16 @@ function setup() {
         [1,2,3,4,5] → no function
         z → freeze sketch</pre>`)
 
-    for (let i = 0; i < Object.keys(scryfall["data"]).length; i++) {
-        // a string of data that contains scryfall data.
-        let typingText = scryfall["data"][i].name
-        typingText += " " + scryfall["data"][i].mana_cost
-        typingText += "\n" + scryfall["data"][i].type_line
-        typingText += "\n" + scryfall["data"][i].oracle_text
+    let cardList = initializeCardList()
 
-        if (scryfall["data"][i].flavor_text !== undefined) {
-            typingText += "\n" + scryfall["data"][i].flavor_text
-        }
+    print(cardList)
 
-        if (scryfall["data"][i].power !== undefined &&
-            scryfall["data"][i].toughness !== undefined) {
-            typingText += "\n" + scryfall["data"][i].power
-            typingText += "/" + scryfall["data"][i].toughness
-        }
+    cardList.sort(sortByCollectorID)
 
-        // print(typingText)
-    }
+    // a random index of my card list
+    let randomCardIndex = int(random(0, cardList.length))
 
-    passage = new Passage("This unit's line wrapping works. This is supposed" +
-        " to be a test message. Currently, typing is not supported, but you" +
-        " will still see this message displayed. In my Github repository," +
-        " this will also display, and with proper technology you may be" +
-        " able to run this program. End of message, W-1000")
+    passage = new Passage(cardList[randomCardIndex]["typing_text"])
 }
 
 
