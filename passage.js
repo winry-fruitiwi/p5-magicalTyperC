@@ -46,7 +46,7 @@ class Passage {
 
 
     // displays the passage
-    render() {
+    render() {-
         // set the font size
         textSize(24)
 
@@ -56,6 +56,19 @@ class Passage {
         for (let i = 0; i < this.text.length; i++) {
             // retrieve our current character and display it
             let currentChar = this.text[i]
+
+            if (i === this.index) {
+                strokeWeight(2.5)
+                stroke(0, 0, 100)
+                line(
+                    cursor.x,
+                    cursor.y + 3,
+                    cursor.x + textWidth(currentChar),
+                    cursor.y + 3
+                )
+
+                noStroke()
+            }
 
             // if the current letter will go past our line wrap x position,
             // we need to wrap our text around. Currently, my program is
@@ -83,8 +96,8 @@ class Passage {
                     continue
                 }
             }
+
             if (currentChar === "\n") {
-                this.#wrapCursor(cursor)
                 this.#wrapCursor(cursor)
                 continue
             }
@@ -103,25 +116,27 @@ class Passage {
 
     // return whatever character we're at based on our index
     getCurrentChar() {
-
+        return this.text[this.index]
     }
 
 
     // advance after pushing true onto this.correctList
     setCorrect() {
-
+        this.correctList.push(true)
+        this.advance()
     }
 
 
     // advance after pushing false onto our correctList
     setIncorrect() {
-
+        this.correctList.push(false)
+        this.advance()
     }
 
 
     // advance our current character
     advance() {
-
+        this.index++
     }
 
 

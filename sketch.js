@@ -8,10 +8,13 @@ let font, scryfall
 let instructions
 // the passage
 let passage
+let correct, incorrect
 
 function preload() {
     font = loadFont('data/consola.ttf')
     scryfall = loadJSON('json/scryfall-snc.json')
+    correct = loadSound("data/correct.wav")
+    incorrect = loadSound("data/incorrect.wav")
 }
 
 function initializeCardList() {
@@ -32,9 +35,9 @@ function initializeCardList() {
 
         // a string of data that contains scryfall data.
         let typingText = currentData['name']
-        typingText += " " + currentData['mana_cost']
-        typingText += "\n" + currentData['type_line']
-        typingText += "\n" + currentData['oracle_text']
+        typingText += " " + currentData['mana_cost'] + "\n"
+        typingText += "\n" + currentData['type_line'] + "\n"
+        typingText += "\n" + currentData['oracle_text'] + "\n"
 
         if (currentData['flavor_text'] !== undefined) {
             typingText += "\n" + currentData['flavor_text']
@@ -54,7 +57,7 @@ function initializeCardList() {
 
         card["typing_text"] = typingText
 
-        print(typingText)
+        // print(typingText)
 
         cardList.push(card)
     }
@@ -81,7 +84,7 @@ function setup() {
     instructions = select('#ins')
     instructions.html(`<pre>
         [1,2,3,4,5] → no function
-        z → freeze sketch</pre>`)
+        ← (left arrow) freezes sketch</pre>`)
 
     let cardList = initializeCardList()
 
@@ -124,9 +127,23 @@ function displayDebugCorner() {
 
 function keyPressed() {
     /* stop sketch */
-    if (key === 'z') {
+    if (keyCode === LEFT_ARROW) {
         noLoop()
         instructions.html(`<pre>
             sketch stopped</pre>`)
+    }
+
+    if (keyCode === SHIFT ||
+        keyCode === ALT ||
+        keyCode === CONTROL) {
+        return
+    }
+
+    if (key === passage.getCurrentChar()) {
+        correct.play()
+        passage.setCorrect()
+    } else {
+        incorrect.play()
+        passage.setIncorrect()
     }
 }
