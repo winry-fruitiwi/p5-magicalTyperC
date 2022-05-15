@@ -84,7 +84,8 @@ function setup() {
     instructions = select('#ins')
     instructions.html(`<pre>
         [1,2,3,4,5] → no function
-        ← (left arrow) freezes sketch</pre>`)
+        ← (left arrow) freezes sketch
+        adjusting sound leads to incorrect key presses</pre>`)
 
     let cardList = initializeCardList()
 
@@ -135,8 +136,16 @@ function keyPressed() {
 
     if (keyCode === SHIFT ||
         keyCode === ALT ||
-        keyCode === CONTROL) {
+        keyCode === CONTROL ||
+        keyCode === LEFT_ARROW ||
+        keyCode === RIGHT_ARROW ||
+        keyCode === DOWN_ARROW ||
+        keyCode === UP_ARROW ||
+        keyCode === TAB
+    ) {
         return
+    } else if (keyCode === ENTER) {
+        key = "\n"
     }
 
     if (key === passage.getCurrentChar()) {

@@ -46,7 +46,7 @@ class Passage {
 
 
     // displays the passage
-    render() {-
+    render() {
         // set the font size
         textSize(24)
 
@@ -77,7 +77,25 @@ class Passage {
             //     this.#wrapCursor(cursor)
             // } // This is character wrap. Now I'll work on word wrap.
 
+            fill(0, 0, 100)
             text(currentChar, cursor.x, cursor.y)
+
+            // if the correct list contains my index, check correctList[i].
+            if (i < this.correctList.length) {
+                if (this.correctList[i] === true) {
+                    fill(89, 100, 78, 30)
+                } else {
+                    fill(0, 66, 78, 30)
+                }
+
+                rect(
+                    cursor.x,
+                    cursor.y - textAscent() - 1,
+                    textWidth(currentChar),
+                    textAscent() + textDescent() + 1,
+                    3
+                )
+            }
 
             // if the current letter is a space, we can find the next space.
             if (currentChar === " ") {
@@ -103,7 +121,7 @@ class Passage {
             }
 
             // increment our cursor's x-position.
-            cursor.x += textWidth(currentChar)
+            cursor.x += textWidth(currentChar) + 1
         }
     }
 
@@ -146,7 +164,7 @@ class Passage {
     // increase y, reset x
     #wrapCursor(cursor) {
         cursor.x = this.TEXT_START.x
-        cursor.y += this.DIST_BETWEEN_LINES
+        cursor.y += this.DIST_BETWEEN_LINES + 2
     }
 
 
