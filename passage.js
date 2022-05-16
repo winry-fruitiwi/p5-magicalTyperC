@@ -32,7 +32,8 @@ class Passage {
         // a factor of 2. That means I need 240 pixels of space. I'd like
         // another 80 just so that I can have a border of 40 pixels around
         // Ziatora's image and then have that be where the text wraps.
-        this.LINE_WRAP_X_POS = width - 320
+        // UPDATE: Actually, the card's width will be resized to 340.
+        this.LINE_WRAP_X_POS = width - 420
 
         // this is where the text starts. Ideally I'd like 50 pixels of space.
         this.TEXT_START = new p5.Vector(

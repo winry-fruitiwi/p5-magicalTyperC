@@ -9,6 +9,8 @@ let instructions
 // the passage
 let passage
 let correct, incorrect
+let cardImgURL
+let cardImg
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -30,7 +32,8 @@ function initializeCardList() {
             'name': currentData['name'],
             'mana_cost': currentData['mana_cost'],
             'type_line': currentData['type_line'],
-            'oracle_text': currentData['oracle_text']
+            'oracle_text': currentData['oracle_text'],
+            'normal': currentData['image_uris']['normal']
         }
 
         // a string of data that contains scryfall data.
@@ -75,7 +78,7 @@ function sortByCollectorID(a, b) {
 }
 
 function setup() {
-    let cnv = createCanvas(900, 600)
+    let cnv = createCanvas(1280, 640)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -97,12 +100,34 @@ function setup() {
     let randomCardIndex = int(random(0, cardList.length))
 
     passage = new Passage(cardList[randomCardIndex]["typing_text"])
+
+    cardImgURL = cardList[randomCardIndex]['normal']
+    cardImg = loadImage(cardImgURL)
+
+
+    print(cardImgURL)
 }
 
 
 function draw() {
     background(234, 34, 24)
     passage.render()
+
+    cardImg.resize(340, 0)
+
+
+    // this is where the image of the card you're typing is displayed!
+    const IMAGE_START_POS = new p5.Vector(
+        passage.LINE_WRAP_X_POS + 10,
+        passage.TOP_MARGIN
+    )
+
+    push()
+
+    translate(IMAGE_START_POS.x, IMAGE_START_POS.y)
+
+    image(cardImg, 0, 0)
+    pop()
 
     displayDebugCorner()
 }
