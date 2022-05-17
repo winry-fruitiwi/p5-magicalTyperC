@@ -2,7 +2,12 @@
  *  @author
  *  @date 2022.05.
  *
- *
+ *  notes:
+ *      keep track of current "location" in card list
+ *      left arrow: subtract 1
+ *      right arrow: add 1
+ *      up arrow: add 10
+ *      down arrow: subtract 10
  */
 let font, scryfall
 let instructions
@@ -10,13 +15,23 @@ let instructions
 let passage
 let correct, incorrect
 let cardImgURL
-let cardImg
+let cardImg, cardList
+let currentCardIndex
 
 function preload() {
     font = loadFont('data/consola.ttf')
     scryfall = loadJSON('json/scryfall-snc.json')
     correct = loadSound("data/correct.wav")
     incorrect = loadSound("data/incorrect.wav")
+}
+
+function updateCard() {
+    passage = new Passage(cardList[currentCardIndex]["typing_text"])
+
+    cardImgURL = cardList[currentCardIndex]['normal']
+    cardImg = loadImage(cardImgURL)
+
+    print(cardImgURL)
 }
 
 function initializeCardList() {
@@ -87,10 +102,11 @@ function setup() {
     instructions = select('#ins')
     instructions.html(`<pre>
         [1,2,3,4,5] → no function
-        ← (left arrow) freezes sketch
-        adjusting sound leads to incorrect key presses</pre>`)
+        pressing escape freezes sketch
+        adjusting sound leads to incorrect key presses
+        use arrow keys to navigate the card list</pre>`)
 
-    let cardList = initializeCardList()
+    cardList = initializeCardList()
 
     print(cardList)
 
@@ -98,14 +114,9 @@ function setup() {
 
     // a random index of my card list
     let randomCardIndex = int(random(0, cardList.length))
+    currentCardIndex = randomCardIndex
 
-    passage = new Passage(cardList[randomCardIndex]["typing_text"])
-
-    cardImgURL = cardList[randomCardIndex]['normal']
-    cardImg = loadImage(cardImgURL)
-
-
-    print(cardImgURL)
+    updateCard()
 }
 
 
@@ -153,20 +164,41 @@ function displayDebugCorner() {
 
 function keyPressed() {
     /* stop sketch */
-    if (keyCode === LEFT_ARROW) {
+    if (keyCode === ESCAPE) {
         noLoop()
         instructions.html(`<pre>
             sketch stopped</pre>`)
     }
 
+    if (keyCode === 100) { /* numpad 4 */
+        currentCardIndex--
+        updateCard()
+        return
+    }
+
+    if (keyCode === 104) { /* numpad 8 */
+        currentCardIndex--
+        updateCard()
+        return
+    }
+
+    if (keyCode === 98) { /* numpad 2 */
+        currentCardIndex--
+        updateCard()
+        return
+    }
+
+    if (keyCode === 102) { /* numpad 6 */
+        currentCardIndex--
+        updateCard()
+        return
+    }
+
     if (keyCode === SHIFT ||
         keyCode === ALT ||
         keyCode === CONTROL ||
-        keyCode === LEFT_ARROW ||
-        keyCode === RIGHT_ARROW ||
-        keyCode === DOWN_ARROW ||
-        keyCode === UP_ARROW ||
-        keyCode === TAB
+        keyCode === TAB ||
+        keyCode === ESCAPE
     ) {
         return
     } else if (keyCode === ENTER) {
