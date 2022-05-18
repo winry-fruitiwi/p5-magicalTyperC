@@ -28,10 +28,10 @@ function preload() {
 function updateCard() {
     passage = new Passage(cardList[currentCardIndex]["typing_text"])
 
-    cardImgURL = cardList[currentCardIndex]['normal']
+    cardImgURL = cardList[currentCardIndex]['png']
     cardImg = loadImage(cardImgURL)
 
-    print(cardImgURL)
+    print(cardList[currentCardIndex]['collector_number'])
 }
 
 function initializeCardList() {
@@ -48,7 +48,7 @@ function initializeCardList() {
             'mana_cost': currentData['mana_cost'],
             'type_line': currentData['type_line'],
             'oracle_text': currentData['oracle_text'],
-            'normal': currentData['image_uris']['normal']
+            'png': currentData['image_uris']['png']
         }
 
         // a string of data that contains scryfall data.
@@ -113,8 +113,7 @@ function setup() {
     cardList.sort(sortByCollectorID)
 
     // a random index of my card list
-    let randomCardIndex = int(random(0, cardList.length))
-    currentCardIndex = randomCardIndex
+    currentCardIndex = int(random(0, cardList.length))
 
     updateCard()
 }
@@ -172,24 +171,40 @@ function keyPressed() {
 
     if (keyCode === 100) { /* numpad 4 */
         currentCardIndex--
+        currentCardIndex = constrain(
+            currentCardIndex, 0, scryfall["data"].length - 1
+        )
+
         updateCard()
         return
     }
 
     if (keyCode === 104) { /* numpad 8 */
-        currentCardIndex--
+        currentCardIndex += 10
+        currentCardIndex = constrain(
+            currentCardIndex, 0, scryfall["data"].length - 1
+        )
+
         updateCard()
         return
     }
 
     if (keyCode === 98) { /* numpad 2 */
-        currentCardIndex--
+        currentCardIndex -= 10
+        currentCardIndex = constrain(
+            currentCardIndex, 0, scryfall["data"].length - 1
+        )
+
         updateCard()
         return
     }
 
     if (keyCode === 102) { /* numpad 6 */
-        currentCardIndex--
+        currentCardIndex++
+        currentCardIndex = constrain(
+            currentCardIndex, 0, scryfall["data"].length - 1
+        )
+
         updateCard()
         return
     }
