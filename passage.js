@@ -43,6 +43,9 @@ class Passage {
 
         // the spacing between lines, where the constant is an extra buffer.
         this.DIST_BETWEEN_LINES = 10 + textAscent() + textDescent()
+
+        // the last right delimiter that I found.
+        this.lastDelimiter = 0
     }
 
 
@@ -69,6 +72,11 @@ class Passage {
                 )
 
                 noStroke()
+
+                // set the last delimiter to the current character if it's a
+                // space, which will help with displaying the current word bar.
+                if (this.text[this.index] === ' ')
+                    this.lastDelimiter = this.index
             }
 
             // if the current letter will go past our line wrap x position,
@@ -123,7 +131,9 @@ class Passage {
 
             // increment our cursor's x-position.
             cursor.x += textWidth(currentChar) + 1
+
         }
+        this.#showCurrentWordBar(0)
     }
 
 
@@ -171,7 +181,45 @@ class Passage {
 
     // show the bar over our current word
     #showCurrentWordBar(char_pos) {
+        // the flag specifying if we include the left delimiter in our later
+        // substring statement, which is based on two delimiters.
+        let includeLeftDelimiter = false
+        let leftDelimiter, rightDelimiter, currentWord
 
+        /* find the two spaces on either side of the index. */
+        // If the index is less than the first space detected, then we set
+        // the left delimiter to 0 and set a flag saying that we can
+        // include the left delimiter in our substring later.
+        if (this.index < this.text.indexOf(' ')) {
+            includeLeftDelimiter = true
+            leftDelimiter = 0
+        } else {
+            leftDelimiter = this.lastDelimiter
+        }
+
+        // if the index is at the end of the passage, then we don't even
+        // need to draw the current word bar!
+        if (this.index === this.text.length - 1) {
+            return
+        } else {
+            rightDelimiter = this.text.indexOf(' ', this.index)
+        }
+
+        /* find the current word, including the right delimiter */
+        // this is where includeLeftDelimiter comes into play! if it's true,
+        // then we include the left delimiter (as it says). Otherwise, don't
+        // include the left delimiter because we know it's a space.
+        if (includeLeftDelimiter) {
+            currentWord = this.text.substring(
+                leftDelimiter, rightDelimiter
+            )
+        } else {
+            currentWord = this.text.substring(
+                leftDelimiter + 1, rightDelimiter
+            )
+        }
+
+        text(`"${currentWord}"`, 0, 30)
     }
 
 

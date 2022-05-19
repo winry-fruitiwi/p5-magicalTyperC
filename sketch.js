@@ -53,9 +53,9 @@ function initializeCardList() {
 
         // a string of data that contains scryfall data.
         let typingText = currentData['name']
-        typingText += " " + currentData['mana_cost'] + "\n"
-        typingText += "\n" + currentData['type_line'] + "\n"
-        typingText += "\n" + currentData['oracle_text'] + "\n"
+        typingText += " " + currentData['mana_cost'] + " \n"
+        typingText += " \n" + currentData['type_line'] + " \n"
+        typingText += " \n" + currentData['oracle_text'] + " \n"
 
         if (currentData['flavor_text'] !== undefined) {
             typingText += "\n" + currentData['flavor_text']
