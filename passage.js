@@ -194,7 +194,7 @@ class Passage {
             includeLeftDelimiter = true
             leftDelimiter = 0
         } else {
-            leftDelimiter = this.lastDelimiter
+            leftDelimiter = this.text.lastIndexOf(' ', this.index - 1)
         }
 
         // if the index is at the end of the passage, then we don't even

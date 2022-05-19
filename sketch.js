@@ -179,6 +179,13 @@ function keyPressed() {
         return
     }
 
+    if (keyCode === 101) { /* numpad 5 */
+        currentCardIndex = int(random(0, scryfall["data"].length - 1))
+
+        updateCard()
+        return
+    }
+
     if (keyCode === 104) { /* numpad 8 */
         currentCardIndex += 10
         currentCardIndex = constrain(
