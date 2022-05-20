@@ -18,6 +18,9 @@ let cardImgURL
 let cardImg, cardList
 let currentCardIndex
 
+// debug text
+let debugText
+
 function preload() {
     font = loadFont('data/consola.ttf')
     scryfall = loadJSON('json/scryfall-snc.json')
@@ -31,7 +34,7 @@ function updateCard() {
     cardImgURL = cardList[currentCardIndex]['png']
     cardImg = loadImage(cardImgURL)
 
-    print(cardList[currentCardIndex]['collector_number'])
+    // print(cardList[currentCardIndex]['collector_number'])
 }
 
 function initializeCardList() {
@@ -53,9 +56,9 @@ function initializeCardList() {
 
         // a string of data that contains scryfall data.
         let typingText = currentData['name']
-        typingText += " " + currentData['mana_cost'] + " \n"
-        typingText += " \n" + currentData['type_line'] + " \n"
-        typingText += " \n" + currentData['oracle_text'] + " \n"
+        typingText += " " + currentData['mana_cost'] + "\n"
+        typingText += "\n" + currentData['type_line'] + "\n"
+        typingText += "\n" + currentData['oracle_text'] + "\n"
 
         if (currentData['flavor_text'] !== undefined) {
             typingText += "\n" + currentData['flavor_text']
@@ -104,11 +107,11 @@ function setup() {
         [1,2,3,4,5] → no function
         pressing escape freezes sketch
         adjusting sound leads to incorrect key presses
-        use arrow keys to navigate the card list</pre>`)
+        use numpad keys to navigate the card list</pre>`)
 
     cardList = initializeCardList()
 
-    print(cardList)
+    // print(cardList)
 
     cardList.sort(sortByCollectorID)
 
@@ -156,7 +159,7 @@ function displayDebugCorner() {
 
     text(`frameCount: ${frameCount}`,
         LEFT_MARGIN, DEBUG_Y_OFFSET - LINE_HEIGHT)
-    text(`frameRate: ${frameRate().toFixed(1)}`,
+    text(`debug text: ${debugText}`,
         LEFT_MARGIN, DEBUG_Y_OFFSET)
 }
 

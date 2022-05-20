@@ -43,9 +43,6 @@ class Passage {
 
         // the spacing between lines, where the constant is an extra buffer.
         this.DIST_BETWEEN_LINES = 10 + textAscent() + textDescent()
-
-        // the last right delimiter that I found.
-        this.lastDelimiter = 0
     }
 
 
@@ -57,9 +54,16 @@ class Passage {
         // this is where our text will be drawn. It can always be modified.
         let cursor = this.TEXT_START.copy()
 
+        // a list of character positions, for use while showing the current
+        // word bar. Later you can retrieve a character and get its position.
+        let charPosList = []
+
         for (let i = 0; i < this.text.length; i++) {
             // retrieve our current character and display it
             let currentChar = this.text[i]
+
+            // append the current position to our character position list
+            charPosList.push(cursor.copy())
 
             if (i === this.index) {
                 strokeWeight(2.5)
@@ -106,6 +110,11 @@ class Passage {
                 )
             }
 
+            if (currentChar === "\n") {
+                this.#wrapCursor(cursor)
+                continue
+            }
+
             // if the current letter is a space, we can find the next space.
             if (currentChar === " ") {
                 // if we don't increment i by one, this will return i
@@ -124,16 +133,14 @@ class Passage {
                 }
             }
 
-            if (currentChar === "\n") {
-                this.#wrapCursor(cursor)
-                continue
-            }
-
             // increment our cursor's x-position.
             cursor.x += textWidth(currentChar) + 1
-
         }
-        this.#showCurrentWordBar(0)
+
+        debugText = cursor
+
+
+        this.#showCurrentWordBar(charPosList)
     }
 
 
@@ -180,11 +187,14 @@ class Passage {
 
 
     // show the bar over our current word
-    #showCurrentWordBar(char_pos) {
+    #showCurrentWordBar(charPosList) {
         // the flag specifying if we include the left delimiter in our later
         // substring statement, which is based on two delimiters.
         let includeLeftDelimiter = false
         let leftDelimiter, rightDelimiter, currentWord
+        let charPosLeftDelimiter
+        let charPosRightDelimiter
+
 
         /* find the two spaces on either side of the index. */
         // If the index is less than the first space detected, then we set
@@ -210,16 +220,29 @@ class Passage {
         // then we include the left delimiter (as it says). Otherwise, don't
         // include the left delimiter because we know it's a space.
         if (includeLeftDelimiter) {
-            currentWord = this.text.substring(
-                leftDelimiter, rightDelimiter
-            )
+
+
+            // the position of the character at the left delimiter index
+            charPosLeftDelimiter = charPosList[leftDelimiter]
         } else {
-            currentWord = this.text.substring(
-                leftDelimiter + 1, rightDelimiter
-            )
+
+
+            // the position of the character at the left delimiter index
+            charPosLeftDelimiter = charPosList[leftDelimiter + 1]
         }
 
-        text(`"${currentWord}"`, 0, 30)
+        try {
+            charPosRightDelimiter = charPosList[rightDelimiter + 1]
+        } catch {
+            charPosRightDelimiter = charPosList[rightDelimiter]
+        }
+
+        stroke(0, 0, 100)
+        strokeWeight(10)
+        point(charPosRightDelimiter.x, charPosRightDelimiter.y)
+
+        point(charPosLeftDelimiter.x, charPosLeftDelimiter.y)
+        noStroke()
     }
 
 
