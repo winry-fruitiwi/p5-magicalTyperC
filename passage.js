@@ -137,8 +137,6 @@ class Passage {
             cursor.x += textWidth(currentChar) + 1
         }
 
-        debugText = cursor
-
 
         this.#showCurrentWordBar(charPosList)
     }
@@ -196,7 +194,7 @@ class Passage {
         let charPosRightDelimiter
 
 
-        /* find the two spaces on either side of the index. */
+        /* find the two spaces/newlines on either side of the index. */
         // If the index is less than the first space detected, then we set
         // the left delimiter to 0 and set a flag saying that we can
         // include the left delimiter in our substring later.
@@ -205,6 +203,9 @@ class Passage {
             leftDelimiter = 0
         } else {
             leftDelimiter = this.text.lastIndexOf(' ', this.index - 1)
+            if (leftDelimiter < this.text.lastIndexOf('\n', this.index - 1)) {
+                leftDelimiter = this.text.lastIndexOf('\n', this.index - 1)
+            }
         }
 
         // if the index is at the end of the passage, then we don't even
@@ -212,7 +213,10 @@ class Passage {
         if (this.index === this.text.length - 1) {
             return
         } else {
-            rightDelimiter = this.text.indexOf(' ', this.index)
+            rightDelimiter = this.text.indexOf(' ', this.index + 1)
+            if (rightDelimiter > this.text.indexOf('\n', this.index)) {
+                rightDelimiter = this.text.indexOf('\n', this.index) - 1
+            }
         }
 
         /* find the current word, including the right delimiter */
@@ -243,6 +247,8 @@ class Passage {
 
         point(charPosLeftDelimiter.x, charPosLeftDelimiter.y)
         noStroke()
+
+        debugText = charPosRightDelimiter
     }
 
 
