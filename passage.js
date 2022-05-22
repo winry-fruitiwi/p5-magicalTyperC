@@ -186,54 +186,38 @@ class Passage {
 
     // show the bar over our current word
     #showCurrentWordBar(charPosList) {
-        // the flag specifying if we include the left delimiter in our later
-        // substring statement, which is based on two delimiters.
-        let includeLeftDelimiter = false
-        let leftDelimiter, rightDelimiter, currentWord
+        let rightDelimiter
         let charPosLeftDelimiter
         let charPosRightDelimiter
 
 
         /* find the two spaces/newlines on either side of the index. */
-        // If the index is less than the first space detected, then we set
-        // the left delimiter to 0 and set a flag saying that we can
-        // include the left delimiter in our substring later.
-        if (this.index < this.text.indexOf(' ')) {
-            includeLeftDelimiter = true
-            leftDelimiter = 0
-        } else {
-            leftDelimiter = this.text.lastIndexOf(' ', this.index - 1)
-            if (leftDelimiter < this.text.lastIndexOf('\n', this.index - 1)) {
-                leftDelimiter = this.text.lastIndexOf('\n', this.index - 1)
-            }
-        }
+        // find the indices of the last space and the last newline.
+        let lastSpace = this.text.lastIndexOf(' ', this.index - 1)
+        let lastNewline = this.text.lastIndexOf('\n', this.index - 1)
+
+        // then we find which number is smaller using the max function!
+        // However, we can shorten the algorithm from 7 lines to 3 by adding
+        // one to the result. This clever hack happens to work; if neither a
+        // space nor newline exists behind the index, then max will return
+        // -1 and adding one will make it 0. Otherwise, it'll return one
+        // plus whichever index was larger.
+        let leftDelimiterPlusOne = max(lastNewline, lastSpace) + 1
 
         // if the index is at the end of the passage, then we don't even
         // need to draw the current word bar!
         if (this.index === this.text.length - 1) {
             return
         } else {
-            rightDelimiter = this.text.indexOf(' ', this.index + 1)
-            if (rightDelimiter > this.text.indexOf('\n', this.index)) {
-                rightDelimiter = this.text.indexOf('\n', this.index) - 1
+            rightDelimiter = this.text.indexOf(' ', this.index)
+            if (rightDelimiter > this.text.indexOf('\n', this.index + 1)) {
+                rightDelimiter = this.text.indexOf('\n', this.index + 1)
             }
         }
 
         /* find the current word, including the right delimiter */
-        // this is where includeLeftDelimiter comes into play! if it's true,
-        // then we include the left delimiter (as it says). Otherwise, don't
-        // include the left delimiter because we know it's a space.
-        if (includeLeftDelimiter) {
-
-
-            // the position of the character at the left delimiter index
-            charPosLeftDelimiter = charPosList[leftDelimiter]
-        } else {
-
-
-            // the position of the character at the left delimiter index
-            charPosLeftDelimiter = charPosList[leftDelimiter + 1]
-        }
+        // the left delimiter exclusion/inclusion takes care of itself.
+        charPosLeftDelimiter = charPosList[leftDelimiterPlusOne]
 
         try {
             charPosRightDelimiter = charPosList[rightDelimiter + 1]
@@ -248,7 +232,7 @@ class Passage {
         point(charPosLeftDelimiter.x, charPosLeftDelimiter.y)
         noStroke()
 
-        debugText = charPosRightDelimiter
+        debugText = lastNewline
     }
 
 
