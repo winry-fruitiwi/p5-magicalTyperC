@@ -204,15 +204,16 @@ class Passage {
         // plus whichever index was larger.
         let leftDelimiterPlusOne = max(lastNewline, lastSpace) + 1
 
-        // if the index is at the end of the passage, then we don't even
-        // need to draw the current word bar!
-        if (this.index === this.text.length - 1) {
-            return
-        } else {
-            rightDelimiter = this.text.indexOf(' ', this.index)
-            if (rightDelimiter > this.text.indexOf('\n', this.index + 1)) {
-                rightDelimiter = this.text.indexOf('\n', this.index + 1)
-            }
+        // find the next space and newline, then compare the two indices
+        // using min
+        let nextSpace = this.text.indexOf(' ', this.index)
+        let nextNewline = this.text.indexOf('\n', this.index)
+        rightDelimiter = min(nextSpace, nextNewline)
+
+        // if the right delimiter is -1, that means we're at the end of the
+        // passage, and we can return this.text.length - 1.
+        if (rightDelimiter === -1) {
+            rightDelimiter = this.text.length - 1
         }
 
         /* find the current word, including the right delimiter */
