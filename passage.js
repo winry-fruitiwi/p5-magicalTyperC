@@ -208,13 +208,18 @@ class Passage {
         // using min
         let nextSpace = this.text.indexOf(' ', this.index)
         let nextNewline = this.text.indexOf('\n', this.index)
-        rightDelimiter = min(nextSpace, nextNewline)
 
-        // if the right delimiter is -1, that means we're at the end of the
-        // passage, and we can return this.text.length - 1.
-        if (rightDelimiter === -1) {
-            rightDelimiter = this.text.length - 1
+        // we have to check if the next space or the next newline does not
+        // exist! Otherwise, if one value is -1, the result of min will be -1.
+        if (nextSpace === -1) {
+            nextSpace = this.text.length - 1
         }
+
+        if (nextNewline === -1) {
+            nextNewline = this.text.length - 1
+        }
+
+        rightDelimiter = min(nextSpace, nextNewline)
 
         /* find the current word, including the right delimiter */
         // the left delimiter exclusion/inclusion takes care of itself.
@@ -222,9 +227,13 @@ class Passage {
 
         try {
             charPosRightDelimiter = charPosList[rightDelimiter + 1]
+            point(charPosRightDelimiter.x, charPosRightDelimiter.y)
         } catch {
             charPosRightDelimiter = charPosList[rightDelimiter]
         }
+
+        debugText = rightDelimiter
+
 
         stroke(0, 0, 100)
         strokeWeight(10)

@@ -8,6 +8,10 @@
  *      right arrow: add 1
  *      up arrow: add 10
  *      down arrow: subtract 10
+ *
+ *  symbols to be typed in cards:
+ *      • = *
+ *      — = -
  */
 let font, scryfall
 let instructions
