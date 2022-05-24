@@ -144,7 +144,7 @@ class Passage {
 
     // have we finished the current passage?
     finished() {
-
+        return this.index === this.text.length - 1
     }
 
 
@@ -182,7 +182,12 @@ class Passage {
 
     // advance our current character
     advance() {
-        this.index++
+        if (!this.finished()) {
+            this.index++
+        }
+        else {
+            noLoop()
+        }
     }
 
 
