@@ -234,6 +234,7 @@ function keyPressed() {
     ) {
         return
     }
+
     else if (keyCode === ENTER) {
         key = "\n"
     }

@@ -182,11 +182,21 @@ class Passage {
 
     // advance our current character
     advance() {
+        // if we haven't finished the passage, increment this.index.
         if (!this.finished()) {
             this.index++
         }
+
+        // otherwise, execute the if statement in keyPressed that increments
+        // the current index and overwrites the passage with a new one.
         else {
-            noLoop()
+            if (currentCardIndex === 265) {
+                currentCardIndex = 0
+            } else {
+                currentCardIndex++
+            }
+
+            updateCard()
         }
     }
 
