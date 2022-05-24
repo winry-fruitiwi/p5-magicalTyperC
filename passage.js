@@ -225,21 +225,57 @@ class Passage {
         // the left delimiter exclusion/inclusion takes care of itself.
         charPosLeftDelimiter = charPosList[leftDelimiterPlusOne]
 
-        try {
-            charPosRightDelimiter = charPosList[rightDelimiter + 1]
-            point(charPosRightDelimiter.x, charPosRightDelimiter.y)
-        } catch {
-            charPosRightDelimiter = charPosList[rightDelimiter]
-        }
+        // this is no longer necessary because I'm going to add the text
+        // width of a space to the position of the right delimiter.
+        // try {
+        //     if (this.text[rightDelimiter] !== "\n") {
+        //         charPosRightDelimiter = charPosList[rightDelimiter + 1]
+        //     } else {
+        //         charPosRightDelimiter = charPosList[rightDelimiter]
+        //     }
+        //
+        //     // this test variable will return an error if the right
+        //     // delimiter character position is undefined. Otherwise,
+        //     // Javascript's arrays don't care about out-of-bound indices.
+        //     let test = charPosRightDelimiter.x
+        // } catch {
+        //     charPosRightDelimiter = charPosList[rightDelimiter]
+        // }
 
-        debugText = rightDelimiter
+        // find the character position of the right delimiter, then add the
+        // text width of a space to the right delimiter because that's not
+        // included otherwise.
+        charPosRightDelimiter = charPosList[rightDelimiter]
+        charPosRightDelimiter.x += textWidth(' ')
+
+        debugText = leftDelimiterPlusOne
 
 
-        stroke(0, 0, 100)
+        stroke(0, 0, 100) // from Procreate, I tested this value
+        strokeWeight(3)
+
+        // draw a line from the x-position of the left delimiter to the
+        // x-position of the right delimiter. However, the y-coordinate
+        // should be the y-coordinate of the index to avoid diagonal lines.
+        // Also, I should add a text ascent because the line will start
+
+        let indexPositionY = charPosList[this.index].y - textAscent() - 5
+
+        line(
+            charPosLeftDelimiter.x,
+            indexPositionY,
+            charPosRightDelimiter.x,
+            indexPositionY
+        )
+
         strokeWeight(10)
-        point(charPosRightDelimiter.x, charPosRightDelimiter.y)
 
-        point(charPosLeftDelimiter.x, charPosLeftDelimiter.y)
+        stroke(0, 50, 100)
+        point(charPosRightDelimiter.x, charPosRightDelimiter.y) // incorrect
+
+        stroke(0, 100, 100)
+        point(charPosLeftDelimiter.x, charPosLeftDelimiter.y) // correct
+
         noStroke()
 
         debugText = lastNewline
