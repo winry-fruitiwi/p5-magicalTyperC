@@ -158,7 +158,7 @@ function displayDebugCorner() {
     const LINE_SPACING = 2
     const LINE_HEIGHT = textAscent() + textDescent() + LINE_SPACING
     fill(0, 0, 100, 100) /* white */
-    strokeWeight(0)
+    noStroke()
 
 
     text(`frameCount: ${frameCount}`,

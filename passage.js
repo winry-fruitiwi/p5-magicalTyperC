@@ -1,7 +1,7 @@
 // stops error generation for constants I don't use. I can choose to take it
 // away if I really want to check.
 
-// noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+// noinspection JSUnusedGlobalSymbols, JSUnusedLocalSymbols, GrazieInspection
 
 class Passage {
     constructor(text) {
@@ -186,12 +186,8 @@ class Passage {
 
     // show the bar over our current word
     #showCurrentWordBar(charPosList) {
-        let rightDelimiter
-        let charPosLeftDelimiter
-        let charPosRightDelimiter
-
-
         /* find the two spaces/newlines on either side of the index. */
+
         // find the indices of the last space and the last newline.
         let lastSpace = this.text.lastIndexOf(' ', this.index - 1)
         let lastNewline = this.text.lastIndexOf('\n', this.index - 1)
@@ -219,45 +215,28 @@ class Passage {
             nextNewline = this.text.length - 1
         }
 
-        rightDelimiter = min(nextSpace, nextNewline)
+        let rightDelimiter = min(nextSpace, nextNewline)
 
         /* find the current word, including the right delimiter */
-        // the left delimiter exclusion/inclusion takes care of itself.
-        charPosLeftDelimiter = charPosList[leftDelimiterPlusOne]
 
-        // this is no longer necessary because I'm going to add the text
-        // width of a space to the position of the right delimiter.
-        // try {
-        //     if (this.text[rightDelimiter] !== "\n") {
-        //         charPosRightDelimiter = charPosList[rightDelimiter + 1]
-        //     } else {
-        //         charPosRightDelimiter = charPosList[rightDelimiter]
-        //     }
-        //
-        //     // this test variable will return an error if the right
-        //     // delimiter character position is undefined. Otherwise,
-        //     // Javascript's arrays don't care about out-of-bound indices.
-        //     let test = charPosRightDelimiter.x
-        // } catch {
-        //     charPosRightDelimiter = charPosList[rightDelimiter]
-        // }
+
+        // the left delimiter exclusion/inclusion takes care of itself.
+        let charPosLeftDelimiter = charPosList[leftDelimiterPlusOne]
 
         // find the character position of the right delimiter, then add the
         // text width of a space to the right delimiter because that's not
         // included otherwise.
-        charPosRightDelimiter = charPosList[rightDelimiter]
+        let charPosRightDelimiter = charPosList[rightDelimiter]
         charPosRightDelimiter.x += textWidth(' ')
 
-        debugText = leftDelimiterPlusOne
-
-
-        stroke(0, 0, 100) // from Procreate, I tested this value
+        stroke(0, 0, 100)
         strokeWeight(3)
 
         // draw a line from the x-position of the left delimiter to the
         // x-position of the right delimiter. However, the y-coordinate
         // should be the y-coordinate of the index to avoid diagonal lines.
-        // Also, I should add a text ascent because the line will start
+        // Also I should subtract a text ascent because the line will start at
+        // the base of the text instead of hovering above.
 
         let indexPositionY = charPosList[this.index].y - textAscent() - 5
 
@@ -268,17 +247,7 @@ class Passage {
             indexPositionY
         )
 
-        strokeWeight(10)
-
-        stroke(0, 50, 100)
-        point(charPosRightDelimiter.x, charPosRightDelimiter.y) // incorrect
-
-        stroke(0, 100, 100)
-        point(charPosLeftDelimiter.x, charPosLeftDelimiter.y) // correct
-
-        noStroke()
-
-        debugText = lastNewline
+        noStroke() // reset the stroke so that it doesn't carry over
     }
 
 
