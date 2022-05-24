@@ -23,7 +23,7 @@ let cardImg, cardList
 let currentCardIndex
 
 // debug text
-let debugText
+let debugText = "Hi! This hasn't been set yet."
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -111,7 +111,10 @@ function setup() {
         [1,2,3,4,5] → no function
         pressing escape freezes sketch
         adjusting sound leads to incorrect key presses
-        use numpad keys to navigate the card list</pre>`)
+        use numpad keys to navigate the card list
+        bullet points can be typed with *
+        dashes can be typed with a hyphen
+        </pre>`)
 
     cardList = initializeCardList()
 
@@ -176,7 +179,7 @@ function keyPressed() {
             sketch stopped</pre>`)
     }
 
-    if (keyCode === 100) { /* numpad 4 */
+    if (keyCode === 100 || keyCode === LEFT_ARROW) { /* numpad 4/left arrow */
         currentCardIndex--
         currentCardIndex = constrain(
             currentCardIndex, 0, scryfall["data"].length - 1
@@ -186,14 +189,14 @@ function keyPressed() {
         return
     }
 
-    if (keyCode === 101) { /* numpad 5 */
+    if (keyCode === 101 || keyCode === 93) { /* numpad 5 or context menu */
         currentCardIndex = int(random(0, scryfall["data"].length - 1))
 
         updateCard()
         return
     }
 
-    if (keyCode === 104) { /* numpad 8 */
+    if (keyCode === 104 || keyCode === UP_ARROW) { /* numpad 8/up arrow */
         currentCardIndex += 10
         currentCardIndex = constrain(
             currentCardIndex, 0, scryfall["data"].length - 1
@@ -203,7 +206,7 @@ function keyPressed() {
         return
     }
 
-    if (keyCode === 98) { /* numpad 2 */
+    if (keyCode === 98 || keyCode === DOWN_ARROW) { /* numpad 2/down arrow */
         currentCardIndex -= 10
         currentCardIndex = constrain(
             currentCardIndex, 0, scryfall["data"].length - 1
@@ -213,7 +216,7 @@ function keyPressed() {
         return
     }
 
-    if (keyCode === 102) { /* numpad 6 */
+    if (keyCode === 102 || keyCode === RIGHT_ARROW) { /* numpad 6 */
         currentCardIndex++
         currentCardIndex = constrain(
             currentCardIndex, 0, scryfall["data"].length - 1
@@ -230,15 +233,23 @@ function keyPressed() {
         keyCode === ESCAPE
     ) {
         return
-    } else if (keyCode === ENTER) {
+    }
+    else if (keyCode === ENTER) {
         key = "\n"
     }
 
     if (key === passage.getCurrentChar()) {
         correct.play()
         passage.setCorrect()
-    } else {
+    }
+    else {
         incorrect.play()
         passage.setIncorrect()
     }
+}
+
+// prevents the context menu from showing up, even when the document
+// context menu key is pressed. Zz made this just for the right mouse button.
+document.oncontextmenu = function() {
+    return false;
 }

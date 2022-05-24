@@ -150,7 +150,19 @@ class Passage {
 
     // return whatever character we're at based on our index
     getCurrentChar() {
-        return this.text[this.index]
+        let currentChar = this.text[this.index]
+
+        // if the current character is a bullet point, return * instead
+        if (currentChar === "•") {
+            return "*"
+        }
+
+        // sometimes the character is an — and the user can type a hyphen.
+        else if (currentChar === "—") {
+            return "-"
+        }
+
+        return currentChar
     }
 
 
