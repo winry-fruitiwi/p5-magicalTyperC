@@ -40,6 +40,9 @@ class Passage {
 
         // the spacing between lines, where the constant is an extra buffer.
         this.DIST_BETWEEN_LINES = 30 + textAscent() + textDescent()
+
+        // padding between a word and the current word bar
+        this.currentWordBarPadding = 5
     }
 
 
@@ -276,7 +279,12 @@ class Passage {
         // Also I should subtract a text ascent because the line will start at
         // the base of the text instead of hovering above.
 
-        let indexPositionY = charPosList[this.index].y - textAscent() - 5
+        // This expression is so long that I'm breaking it up!
+        let indexPositionY = (
+            charPosList[this.index].y -
+            textAscent() -
+            this.currentWordBarPadding
+        )
 
         line(
             charPosLeftDelimiter.x,
@@ -289,18 +297,18 @@ class Passage {
     }
 
 
-    // show the cursor of the letter we're currently on
+    // show the cursor of the letter we're currently on. TODO not implemented
     #showTextCursor(char_pos) {
 
     }
 
 
-    // wrap cursor if position is over LINE_WRAP_X_POS
+    // wrap cursor if position is over LINE_WRAP_X_POS. TODO not implemented
     #handleNewLines() {
 
     }
 
-
+    // TODO not implemented or commented
     #showHighlightBox(i, cursor) {
 
     }
