@@ -13,6 +13,8 @@
  *      • = *
  *      — = -
  */
+
+
 let font, scryfall
 let instructions
 // the passage
@@ -60,7 +62,7 @@ function initializeCardList() {
 
         // a string of data that contains scryfall data.
         let typingText = currentData['name']
-        typingText += " " + currentData['mana_cost'] + "\n"
+        typingText += " " + currentData['mana_cost']
         typingText += "\n" + currentData['type_line']
         typingText += "\n" + currentData['oracle_text']
 
@@ -177,6 +179,7 @@ function keyPressed() {
         noLoop()
         instructions.html(`<pre>
             sketch stopped</pre>`)
+        return
     }
 
     if (keyCode === 100 || keyCode === LEFT_ARROW) { /* numpad 4/left arrow */
@@ -250,7 +253,7 @@ function keyPressed() {
 }
 
 // prevents the context menu from showing up, even when the document
-// context menu key is pressed. Zz made this just for the right mouse button.
+// context menu key is pressed (which I use for scrolling the card list).
 document.oncontextmenu = function() {
     return false;
 }

@@ -17,32 +17,29 @@ class Passage {
         // the top margin for all text and the bounding box.
         this.TOP_MARGIN = 50
 
-        // the x-position of the bounding box
-        this.X_MARGIN = 50
+        // the place where the text starts
+        this.TEXT_START_X = 100
 
-        // the place where the text starts relative to the bounding box
-        this.TEXT_START_X = 50
-
-        // the distance from the top of the bounding box to the tallest
-        // character in the current font, which is consola.
-        this.DIST_FROM_BOX_TOP = 100 - textAscent() - this.TOP_MARGIN
+        // the distance from the top of the canvas to the tallest character
+        // in the current font, which is consola. TODO
+        this.DIST_FROM_CANVAS_TOP = 100 - textAscent() - this.TOP_MARGIN
 
         // the position of x where we wrap the line. Ziatora's card's width
         // is around 480 pixels, but I'm probably going to scale it down by
         // a factor of 2. That means I need 240 pixels of space. I'd like
-        // another 80 just so that I can have a border of 40 pixels around
+        // another 100 just so that I can have a border of 50 pixels around
         // Ziatora's image and then have that be where the text wraps.
         // UPDATE: Actually, the card's width will be resized to 340.
-        this.LINE_WRAP_X_POS = width - 420
+        this.LINE_WRAP_X_POS = width - 440 // TODO
 
         // this is where the text starts. Ideally I'd like 50 pixels of space.
         this.TEXT_START = new p5.Vector(
-            this.X_MARGIN + this.TEXT_START_X,
-            this.TOP_MARGIN + this.DIST_FROM_BOX_TOP
+            this.TOP_MARGIN + this.TEXT_START_X, // TODO needs fixing
+            this.TOP_MARGIN + this.DIST_FROM_CANVAS_TOP
         )
 
         // the spacing between lines, where the constant is an extra buffer.
-        this.DIST_BETWEEN_LINES = 10 + textAscent() + textDescent()
+        this.DIST_BETWEEN_LINES = 30 + textAscent() + textDescent()
     }
 
 
@@ -137,8 +134,22 @@ class Passage {
             cursor.x += textWidth(currentChar) + 1
         }
 
+        // after the loop, the cursor is now at the end of the passage, so
+        // that can be the left highlight box corner.
+        const LEFT_BOX_CORNER_Y = cursor.y
 
+        // show the current word bar.
         this.#showCurrentWordBar(charPosList)
+
+        // I'm using a quad so that I can catch errors in my coordinates
+        // that make my bounding box lopsided. I added an arbitrary constant
+        // to the top-right corner.
+        quad(
+            this.BOUNDING_BOX_LEFT_MARGIN, this.TOP_MARGIN,
+            this.LINE_WRAP_X_POS + 5, this.TOP_MARGIN,
+            this.LINE_WRAP_X_POS + 5, LEFT_BOX_CORNER_Y,
+            this.LINE_WRAP_X_POS + 5
+        )
     }
 
 
@@ -190,7 +201,7 @@ class Passage {
         // otherwise, execute the if statement in keyPressed that increments
         // the current index and overwrites the passage with a new one.
         else {
-            if (currentCardIndex === 265) {
+            if (currentCardIndex === cardList.length - 1) {
                 currentCardIndex = 0
             } else {
                 currentCardIndex++
@@ -204,7 +215,7 @@ class Passage {
     /* from here, there will only be private methods */
 
 
-    // increase y, reset x
+    // increase y, reset x, increase the text width
     #wrapCursor(cursor) {
         cursor.x = this.TEXT_START.x
         cursor.y += this.DIST_BETWEEN_LINES + 2
