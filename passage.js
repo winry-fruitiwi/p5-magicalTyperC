@@ -215,10 +215,10 @@ class Passage {
     /* from here, there will only be private methods */
 
 
-    // increase y, reset x, increase the text width
+    // increase y, reset x
     #wrapCursor(cursor) {
         cursor.x = this.TEXT_START.x
-        cursor.y += this.DIST_BETWEEN_LINES + 2
+        cursor.y += this.DIST_BETWEEN_LINES
     }
 
 
