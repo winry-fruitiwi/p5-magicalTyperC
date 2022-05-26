@@ -50,7 +50,7 @@ class Passage {
         this.LETTER_SPACING = 2
 
         // the horizontal padding for the bounding box
-        this.BOUNDING_BOX_PADDINGH = 10
+        this.BOUNDING_BOX_PADDINGH = 20
     }
 
 
@@ -132,7 +132,6 @@ class Passage {
 
             // if the current letter is a space, we can find the next space.
             if (currentChar === " ") {
-                lines++
                 // if we don't increment i by one, this will return i
                 let nextSpace = this.text.indexOf(" ", i + 1)
 
@@ -142,6 +141,7 @@ class Passage {
                 )
 
                 if (textWidth(currentWord) + cursor.x >= this.LINE_WRAP_X_POS) {
+                    lines++
                     this.#wrapCursor(cursor)
 
                     // prevents extra unnecessary wrapping
@@ -163,6 +163,10 @@ class Passage {
         // show the current word bar.
         this.#showCurrentWordBar(charPosList)
 
+        noFill()
+        stroke(0, 0, 100)
+        strokeWeight(2)
+
         // I'm using a quad so that I can catch errors in my coordinates
         // that make my bounding box lopsided.
         quad(
@@ -170,8 +174,13 @@ class Passage {
             this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
             this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
             BOX_BOTTOM_Y,
-            width - this.RIGHT_MARGIN
+            width - this.RIGHT_MARGIN + this.BOUNDING_BOX_PADDINGH,
+            BOX_BOTTOM_Y,
+            width - this.RIGHT_MARGIN + this.BOUNDING_BOX_PADDINGH,
+            this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
         )
+
+        // print(BOX_BOTTOM_Y)
     }
 
 
