@@ -137,13 +137,15 @@ function draw() {
     background(234, 34, 24)
     passage.render()
 
-    cardImg.resize(340, 0)
+    // resize the card image. the second argument being 0 means
+    // "proportionally scale me, please!", not "make me a straight line!"
+    cardImg.resize(CARD_IMG_WIDTH, 0)
 
 
     // this is where the image of the card you're typing is displayed!
     const IMAGE_START_POS = new p5.Vector(
-        passage.LINE_WRAP_X_POS + 10,
-        passage.TOP_MARGIN
+        passage.LINE_WRAP_X_POS + CARD_HORIZONTAL_MARGIN,
+        passage.TEXT_START.y
     )
 
     push()
