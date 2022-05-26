@@ -43,6 +43,18 @@ class Passage {
 
         // padding between a word and the current word bar
         this.currentWordBarPadding = 5
+
+        // an offset for drawing the current character bar
+        this.currentCharacterBarOffset = 3
+
+        // padding for the highlight box of each character
+        this.highlightBoxPadding = 3
+
+        // the rounding radius for the highlight box
+        this.highlightCornerRoundRadius = 3
+
+        // the x-spacing between each letter
+        this.letterSpacing = 2
     }
 
 
@@ -68,19 +80,18 @@ class Passage {
             if (i === this.index) {
                 strokeWeight(2.5)
                 stroke(0, 0, 100)
+
+                // we add the text descent so that our bar is right under
+                // the character if it has a descent, and otherwise hovering
+                // comfortably below.
                 line(
                     cursor.x,
-                    cursor.y + 3,
+                    cursor.y + textDescent(),
                     cursor.x + textWidth(currentChar),
-                    cursor.y + 3
+                    cursor.y + textDescent()
                 )
 
                 noStroke()
-
-                // set the last delimiter to the current character if it's a
-                // space, which will help with displaying the current word bar.
-                if (this.text[this.index] === ' ')
-                    this.lastDelimiter = this.index
             }
 
             // if the current letter will go past our line wrap x position,
@@ -103,10 +114,10 @@ class Passage {
 
                 rect(
                     cursor.x,
-                    cursor.y - textAscent() - 1,
+                    cursor.y - textAscent() - this.highlightBoxPadding,
                     textWidth(currentChar),
-                    textAscent() + textDescent() + 1,
-                    3
+                    textAscent() + textDescent() + this.highlightBoxPadding,
+                    this.highlightCornerRoundRadius
                 )
             }
 
@@ -134,7 +145,7 @@ class Passage {
             }
 
             // increment our cursor's x-position.
-            cursor.x += textWidth(currentChar) + 1
+            cursor.x += textWidth(currentChar) + this.letterSpacing
         }
 
         // after the loop, the cursor is now at the end of the passage, so
@@ -146,13 +157,13 @@ class Passage {
 
         // I'm using a quad so that I can catch errors in my coordinates
         // that make my bounding box lopsided. I added an arbitrary constant
-        // to the top-right corner.
-        quad(
-            this.BOUNDING_BOX_LEFT_MARGIN, this.TOP_MARGIN,
-            this.LINE_WRAP_X_POS + 5, this.TOP_MARGIN,
-            this.LINE_WRAP_X_POS + 5, LEFT_BOX_CORNER_Y,
-            this.LINE_WRAP_X_POS + 5
-        )
+        // to the top-right corner. TODO finish this soon
+        // quad(
+        //     this.BOUNDING_BOX_LEFT_MARGIN, this.TOP_MARGIN,
+        //     this.LINE_WRAP_X_POS + 5, this.TOP_MARGIN,
+        //     this.LINE_WRAP_X_POS + 5, LEFT_BOX_CORNER_Y,
+        //     this.LINE_WRAP_X_POS + 5
+        // )
     }
 
 
