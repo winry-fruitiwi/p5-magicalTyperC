@@ -14,47 +14,43 @@ class Passage {
 
         // these are the constants!
 
-        // the top margin for all text and the bounding box.
-        this.TOP_MARGIN = 50
+        // the top margin for all text.
+        this.TOP_MARGIN = 100
 
         // the place where the text starts
-        this.TEXT_START_X = 100
+        this.LEFT_MARGIN = 100
 
-        // the distance from the top of the canvas to the tallest character
-        // in the current font, which is consola. TODO
-        this.DIST_FROM_CANVAS_TOP = 100 - textAscent() - this.TOP_MARGIN
-
-        // the position of x where we wrap the line. Ziatora's card's width
-        // is around 480 pixels, but I'm probably going to scale it down by
-        // a factor of 2. That means I need 240 pixels of space. I'd like
-        // another 100 just so that I can have a border of 50 pixels around
-        // Ziatora's image and then have that be where the text wraps.
-        // UPDATE: Actually, the card's width will be resized to 340.
-        this.LINE_WRAP_X_POS = width - 440 // TODO
-
-        // this is where the text starts. Ideally I'd like 50 pixels of space.
-        this.TEXT_START = new p5.Vector(
-            this.TOP_MARGIN + this.TEXT_START_X, // TODO needs fixing
-            this.TOP_MARGIN + this.DIST_FROM_CANVAS_TOP
-        )
-
-        // the spacing between lines, where the constant is an extra buffer.
-        this.DIST_BETWEEN_LINES = 30 + textAscent() + textDescent()
-
-        // padding between a word and the current word bar
-        this.currentWordBarPadding = 5
-
-        // an offset for drawing the current character bar
-        this.currentCharacterBarOffset = 3
+        // the margin from the right edge of the bounding box to the right
+        // canvas edge
+        this.RIGHT_MARGIN = CARD_IMG_WIDTH + 2 * CARD_HORIZONTAL_MARGIN
 
         // padding for the highlight box of each character
         this.highlightBoxPadding = 3
 
-        // the rounding radius for the highlight box
-        this.highlightCornerRoundRadius = 3
+        // the distance from the top of the canvas to the tallest character
+        // in the current font, which is consola.
+        this.DIST_FROM_CANVAS_TOP = this.TOP_MARGIN - textAscent() - this.TOP_MARGIN
+
+        // the x-position where I wrap my text.
+        this.LINE_WRAP_X_POS = width - CARD_IMG_WIDTH - 2 * CARD_HORIZONTAL_MARGIN
+
+        // this is where the text starts. Ideally I'd like 50 pixels of space.
+        this.TEXT_START = new p5.Vector(
+            this.LEFT_MARGIN,
+            this.TOP_MARGIN + this.DIST_FROM_CANVAS_TOP
+        )
+
+        // the height of each line without accounting for spacing
+        this.LINE_HEIGHT = textAscent() + textDescent() + 2 * this.highlightBoxPadding
+
+        // the spacing between lines
+        this.LINE_SPACING = 30
 
         // the x-spacing between each letter
-        this.letterSpacing = 2
+        this.LETTER_SPACING = 2
+
+        // the horizontal padding for the bounding box
+        this.BOUNDING_BOX_PADDINGH = 10
     }
 
 
@@ -62,6 +58,10 @@ class Passage {
     render() {
         // set the font size
         textSize(24)
+
+        // the number of lines in my program. Increments as I find enters
+        // and line wrapping sections (generally whenever I wrap a line).
+        let lines = 1
 
         // this is where our text will be drawn. It can always be modified.
         let cursor = this.TEXT_START.copy()
@@ -104,6 +104,9 @@ class Passage {
             fill(0, 0, 100)
             text(currentChar, cursor.x, cursor.y)
 
+            // the rounding radius for the highlight box
+            let highlightCornerRoundRadius = 3
+
             // if the correct list contains my index, check correctList[i].
             if (i < this.correctList.length) {
                 if (this.correctList[i] === true) {
@@ -117,17 +120,19 @@ class Passage {
                     cursor.y - textAscent() - this.highlightBoxPadding,
                     textWidth(currentChar),
                     textAscent() + textDescent() + this.highlightBoxPadding,
-                    this.highlightCornerRoundRadius
+                    highlightCornerRoundRadius
                 )
             }
 
             if (currentChar === "\n") {
+                lines++
                 this.#wrapCursor(cursor)
                 continue
             }
 
             // if the current letter is a space, we can find the next space.
             if (currentChar === " ") {
+                lines++
                 // if we don't increment i by one, this will return i
                 let nextSpace = this.text.indexOf(" ", i + 1)
 
@@ -145,25 +150,28 @@ class Passage {
             }
 
             // increment our cursor's x-position.
-            cursor.x += textWidth(currentChar) + this.letterSpacing
+            cursor.x += textWidth(currentChar) + this.LETTER_SPACING
         }
+
+        // the height of each line, including the spacing
+        let lineHeightPlusSpacing = this.LINE_SPACING + this.LINE_HEIGHT
 
         // after the loop, the cursor is now at the end of the passage, so
         // that can be the left highlight box corner.
-        const LEFT_BOX_CORNER_Y = cursor.y
+        const BOX_BOTTOM_Y = lines * lineHeightPlusSpacing
 
         // show the current word bar.
         this.#showCurrentWordBar(charPosList)
 
         // I'm using a quad so that I can catch errors in my coordinates
-        // that make my bounding box lopsided. I added an arbitrary constant
-        // to the top-right corner. TODO finish this soon
-        // quad(
-        //     this.BOUNDING_BOX_LEFT_MARGIN, this.TOP_MARGIN,
-        //     this.LINE_WRAP_X_POS + 5, this.TOP_MARGIN,
-        //     this.LINE_WRAP_X_POS + 5, LEFT_BOX_CORNER_Y,
-        //     this.LINE_WRAP_X_POS + 5
-        // )
+        // that make my bounding box lopsided.
+        quad(
+            this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
+            this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
+            this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
+            BOX_BOTTOM_Y,
+            width - this.RIGHT_MARGIN
+        )
     }
 
 
@@ -231,13 +239,22 @@ class Passage {
 
     // increase y, reset x
     #wrapCursor(cursor) {
+        // the height of each line, including the spacing
+        let lineHeightPlusSpacing = this.LINE_SPACING + this.LINE_HEIGHT
+
         cursor.x = this.TEXT_START.x
-        cursor.y += this.DIST_BETWEEN_LINES
+        cursor.y += lineHeightPlusSpacing
     }
 
 
     // show the bar over our current word
     #showCurrentWordBar(charPosList) {
+        /* find variables */
+
+        // padding between a word and the current word bar
+        let currentWordBarPadding = 5
+
+
         /* find the two spaces/newlines on either side of the index. */
 
         // find the indices of the last space and the last newline.
@@ -294,7 +311,7 @@ class Passage {
         let indexPositionY = (
             charPosList[this.index].y -
             textAscent() -
-            this.currentWordBarPadding
+            currentWordBarPadding
         )
 
         line(

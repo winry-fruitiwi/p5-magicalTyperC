@@ -23,6 +23,8 @@ let correct, incorrect
 let cardImgURL
 let cardImg, cardList
 let currentCardIndex
+const CARD_IMG_WIDTH = 340
+const CARD_HORIZONTAL_MARGIN = 50
 
 // debug text
 let debugText = "Hi! This hasn't been set yet."
