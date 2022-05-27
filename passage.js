@@ -156,16 +156,21 @@ class Passage {
         // the height of each line, including the spacing
         let lineHeightPlusSpacing = this.LINE_SPACING + this.LINE_HEIGHT
 
+        // the bounding box's top y-value, which is necessary for
+        // calculating the bottom value. Or I could just translate.
+        const BOX_TOP_Y = this.TOP_MARGIN - textAscent() - this.LINE_SPACING
+
         // I set this variable to 5 times the line height and the spacing
         // combined because that's how TypingClub displays it.
         // FIXME: the bounding box ends at 4 instead of 5 lines.
-        const BOX_BOTTOM_Y = 5 * lineHeightPlusSpacing
+        // Problem solved!
+        const BOX_BOTTOM_Y = 4 * lineHeightPlusSpacing + BOX_TOP_Y
 
         // show the current word bar.
         this.#showCurrentWordBar(charPosList)
 
         noFill()
-        noStroke()
+        stroke(0, 0, 100)
 
         fill(237, 37, 20)
 
