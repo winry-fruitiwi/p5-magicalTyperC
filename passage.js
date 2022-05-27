@@ -156,29 +156,52 @@ class Passage {
         // the height of each line, including the spacing
         let lineHeightPlusSpacing = this.LINE_SPACING + this.LINE_HEIGHT
 
-        // after the loop, the cursor is now at the end of the passage, so
-        // that can be the left highlight box corner.
-        const BOX_BOTTOM_Y = lines * lineHeightPlusSpacing
+        // I set this variable to 5 times the line height and the spacing
+        // combined because that's how TypingClub displays it.
+        // FIXME: the bounding box ends at 4 instead of 5 lines.
+        const BOX_BOTTOM_Y = 5 * lineHeightPlusSpacing
 
         // show the current word bar.
         this.#showCurrentWordBar(charPosList)
 
         noFill()
-        stroke(0, 0, 100)
-        strokeWeight(2)
+        noStroke()
 
-        // I'm using a quad so that I can catch errors in my coordinates
-        // that make my bounding box lopsided.
-        quad(
+        fill(237, 37, 20)
+
+        // outer shape is clockwise, inner shape is counterclockwise
+        beginShape();
+
+        // the outer shape should have the entire canvas inside
+        vertex(width, 0)
+        vertex(width, height)
+        vertex(0, height)
+        vertex(0, 0)
+
+        beginContour()
+
+        // the inner shape is the bounding box, with all of the coordinates
+        // from my old quadrilateral. I should have used a rectangle instead
+        // of a quadrilateral, but my intention was to test all of the points.
+        vertex(
             this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
             this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
+        )
+        vertex(
             this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
             BOX_BOTTOM_Y,
+        )
+        vertex(
             width - this.RIGHT_MARGIN + this.BOUNDING_BOX_PADDINGH,
             BOX_BOTTOM_Y,
+        )
+        vertex(
             width - this.RIGHT_MARGIN + this.BOUNDING_BOX_PADDINGH,
             this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
         )
+        endContour()
+
+        endShape(CLOSE)
 
         // print(BOX_BOTTOM_Y)
     }
