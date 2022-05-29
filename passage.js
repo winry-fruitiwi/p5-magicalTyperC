@@ -170,7 +170,7 @@ class Passage {
         this.#showCurrentWordBar(charPosList)
 
         noFill()
-        stroke(0, 0, 100)
+        noStroke()
 
         fill(237, 37, 20)
 
