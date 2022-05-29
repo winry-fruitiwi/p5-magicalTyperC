@@ -12,6 +12,9 @@ class Passage {
         // a list of boolean values marking if the character was correct
         this.correctList = []
 
+        // the y-offset for the text, which will simulate scrolling.
+        this.yOffset = 0
+
         // these are the constants!
 
         // the top margin for all text.
@@ -61,14 +64,25 @@ class Passage {
 
         // the number of lines in my program. Increments as I find enters
         // and line wrapping sections (generally whenever I wrap a line).
-        let lines = 1
+        let lines = 0
 
         // this is where our text will be drawn. It can always be modified.
         let cursor = this.TEXT_START.copy()
 
+        // the height of the viewport, measured in lines
+        let viewportHeight = 3
+
+        // number of lines we've typed
+        let linesTyped
+
         // a list of character positions, for use while showing the current
         // word bar. Later you can retrieve a character and get its position.
         let charPosList = []
+
+        // translate the entire expression by the y-offset. However, we need
+        // to make it negative, or else we'd be scrolling downward!
+        push()
+        translate(0, -this.yOffset)
 
         for (let i = 0; i < this.text.length; i++) {
             // retrieve our current character and display it
@@ -90,6 +104,8 @@ class Passage {
                     cursor.x + textWidth(currentChar),
                     cursor.y + textDescent()
                 )
+
+                linesTyped = lines
 
                 noStroke()
             }
@@ -153,6 +169,11 @@ class Passage {
             cursor.x += textWidth(currentChar) + this.LETTER_SPACING
         }
 
+        // show the current word bar.
+        this.#showCurrentWordBar(charPosList)
+
+        pop()
+
         // the height of each line, including the spacing
         let lineHeightPlusSpacing = this.LINE_SPACING + this.LINE_HEIGHT
 
@@ -160,14 +181,21 @@ class Passage {
         // calculating the bottom value. Or I could just translate.
         const BOX_TOP_Y = this.TOP_MARGIN - textAscent() - this.LINE_SPACING
 
-        // I set this variable to 5 times the line height and the spacing
-        // combined because that's how TypingClub displays it.
-        // FIXME: the bounding box ends at 4 instead of 5 lines.
-        // Problem solved!
-        const BOX_BOTTOM_Y = 4 * lineHeightPlusSpacing + BOX_TOP_Y
+        // the bottom of the bounding box based on the top of the box. Could
+        // potentially be changed into a constant, but it simplifies code
+        // dramatically.
+        const BOX_BOTTOM_Y = viewportHeight * lineHeightPlusSpacing + BOX_TOP_Y
 
-        // show the current word bar.
-        this.#showCurrentWordBar(charPosList)
+        // set the lines that should be scrolled to the appropriate formula
+        // result.
+        let linesScrolled = linesTyped - viewportHeight + 2
+
+        // if the lines scrolled is negative, set it to 0.
+        if (linesScrolled < 0) {
+            linesScrolled = 0
+        }
+
+        this.yOffset = linesScrolled * lineHeightPlusSpacing
 
         noFill()
         noStroke()
@@ -190,26 +218,26 @@ class Passage {
         // of a quadrilateral, but my intention was to test all of the points.
         vertex(
             this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
-            this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
+            BOX_TOP_Y
         )
         vertex(
             this.LEFT_MARGIN - this.BOUNDING_BOX_PADDINGH,
-            BOX_BOTTOM_Y,
+            BOX_BOTTOM_Y
         )
         vertex(
             width - this.RIGHT_MARGIN + this.BOUNDING_BOX_PADDINGH,
-            BOX_BOTTOM_Y,
+            BOX_BOTTOM_Y
         )
         vertex(
             width - this.RIGHT_MARGIN + this.BOUNDING_BOX_PADDINGH,
-            this.TOP_MARGIN - textAscent() - this.LINE_SPACING,
+            BOX_TOP_Y
         )
         endContour()
 
         endShape(CLOSE)
 
         // print(BOX_BOTTOM_Y)
-    }
+}
 
 
     // have we finished the current passage?
