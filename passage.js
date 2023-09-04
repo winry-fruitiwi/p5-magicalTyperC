@@ -56,6 +56,41 @@ class Passage {
         this.BOUNDING_BOX_PADDINGH = 20
     }
 
+    displayCarriageReturn(origin) {
+        // miscellaneous variables. Note that h = 2w, and that I am accounting
+        // for the translation to origin in advance.
+        let sideWidth = 4
+        let n = 4
+        let w = n * sideWidth
+        let s = sideWidth / 2
+        let r = sqrt(3) * s // based on the math in my diagram
+
+        // the tip of the equilateral triangle in our carriage return arrow
+        let triTip = new p5.Vector(w / 4, -w / 2)
+
+        push()
+        translate(origin)
+        translate(0, w/2)
+
+        // you can comment all the stroke/fill commands and uncomment these to
+        // create a white carriage return arrow
+        stroke(0, 0, 100)
+        fill(0, 0, 100)
+
+        // make the stroke weight scale depending on the side width
+        strokeWeight(sideWidth * 8 / 20)
+        line(3 * w / 4, -3 * w / 2, 3 * w / 4, -w / 2)
+
+        line(3 * w / 4, -w / 2, triTip.x + r, triTip.y)
+
+        triangle(
+            triTip.x, triTip.y,
+            triTip.x + r, triTip.y + sqrt(3) / 3 * r,
+            triTip.x + r, triTip.y - sqrt(3) / 3 * r
+        )
+
+        pop()
+    }
 
     // displays the passage
     render() {
@@ -70,7 +105,7 @@ class Passage {
         let cursor = this.TEXT_START.copy()
 
         // the height of the viewport, measured in lines
-        let viewportHeight = 3
+        let viewportHeight = 10
 
         // number of lines we've typed
         let linesTyped
@@ -142,6 +177,9 @@ class Passage {
 
             if (currentChar === "\n") {
                 lines++
+
+                this.displayCarriageReturn(cursor)
+
                 this.#wrapCursor(cursor)
                 continue
             }

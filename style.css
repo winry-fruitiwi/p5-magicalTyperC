@@ -12,7 +12,11 @@ body {
 #ins {
     color: gainsboro;
     padding: 2px 4px 2px 4px;
-    font-family: consolas;
+    font-family: consolas, monospace;
     font-size: 12px;
     height: 100px;
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
