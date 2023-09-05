@@ -1,5 +1,5 @@
 /**
- *  @author
+ *  @author Winry
  *  @date 2022.05.
  *
  *  notes:
@@ -22,7 +22,7 @@ let passage
 let correct, incorrect
 let cardImgURL
 let cardImg, cardList = []
-let currentCardIndex = 8
+let currentCardIndex = 0
 const CARD_IMG_WIDTH = 340
 const CARD_HORIZONTAL_MARGIN = 50
 
@@ -66,44 +66,109 @@ function initializeCardList(data) {
         let currentData = data["data"][i]
 
         if (currentData['rarity'] === 'common' || currentData['rarity'] === 'uncommon') {
-            print(currentData['name'])
-            // an object composing of all the card data I'll need, and you can
-            // just access its values!
-            let card = {
-                'name': currentData['name'],
-                'mana_cost': currentData['mana_cost'],
-                'type_line': currentData['type_line'],
-                'oracle_text': currentData['oracle_text'],
-                'png': currentData['image_uris']['png']
+            if (currentData['card_faces']) {
+                for (let face of currentData['card_faces']) {
+                    // an object composing of all the card data I'll need, and you can
+                    // just access its values!
+                    let card = {
+                        'name': face['name'],
+                        'mana_cost': face['mana_cost'],
+                        'type_line': face['type_line'],
+                        'oracle_text': face['oracle_text'],
+                        'png': currentData['image_uris']['png']
+                    }
+
+                    // a string of data that contains scryfall data.
+                    let typingText = face['name']
+                    typingText += " " + face['mana_cost']
+                    typingText += "\n" + face['type_line']
+                    typingText += "\n" + face['oracle_text']
+
+                    if (currentData['flavor_text'] !== undefined) {
+                        typingText += "\n" + currentData['flavor_text']
+                        card['flavor_text'] = currentData['flavor_text']
+                    }
+
+                    if (face['power'] !== undefined &&
+                        face['toughness'] !== undefined) {
+                        typingText += "\n" + face['power']
+                        typingText += "/" + face['toughness']
+                        card['power'] = face['power']
+                        card['toughness'] = face['toughness']
+                    }
+
+                    // typingText += "\n" + currentData['collector_number']
+                    card['collector_number'] = currentData['collector_number']
+
+                    // look for reminder text and remove it
+                    for (let i=0; i<typingText.length; i++) {
+                        let char = typingText[i]
+                        if (char === "(") {
+                            print(card['name'], "has reminder text")
+                            let reminderEnd = typingText.indexOf(")")
+                            let textToRemove = typingText.slice(i, reminderEnd+1)
+                            typingText = typingText.replace(textToRemove, "")
+                        }
+                    }
+
+                    card["typing_text"] = typingText
+
+                    // print(typingText)
+
+                    cardList.push(card)
+                }
             }
 
-            // a string of data that contains scryfall data.
-            let typingText = currentData['name']
-            typingText += " " + currentData['mana_cost']
-            typingText += "\n" + currentData['type_line']
-            typingText += "\n" + currentData['oracle_text']
+            else {
+                // an object composing of all the card data I'll need, and you can
+                // just access its values!
+                let card = {
+                    'name': currentData['name'],
+                    'mana_cost': currentData['mana_cost'],
+                    'type_line': currentData['type_line'],
+                    'oracle_text': currentData['oracle_text'],
+                    'png': currentData['image_uris']['png']
+                }
 
-            if (currentData['flavor_text'] !== undefined) {
-                typingText += "\n" + currentData['flavor_text']
-                card['flavor_text'] = currentData['flavor_text']
+                // a string of data that contains scryfall data.
+                let typingText = currentData['name']
+                typingText += " " + currentData['mana_cost']
+                typingText += "\n" + currentData['type_line']
+                typingText += "\n" + currentData['oracle_text']
+
+                if (currentData['flavor_text'] !== undefined) {
+                    typingText += "\n" + currentData['flavor_text']
+                    card['flavor_text'] = currentData['flavor_text']
+                }
+
+                if (currentData['power'] !== undefined &&
+                    currentData['toughness'] !== undefined) {
+                    typingText += "\n" + currentData['power']
+                    typingText += "/" + currentData['toughness']
+                    card['power'] = currentData['power']
+                    card['toughness'] = currentData['toughness']
+                }
+
+                // typingText += "\n" + currentData['collector_number']
+                card['collector_number'] = currentData['collector_number']
+
+                // look for reminder text and remove it
+                for (let i=0; i<typingText.length; i++) {
+                    let char = typingText[i]
+                    if (char === "(") {
+                        print(card['name'], "has reminder text")
+                        let reminderEnd = typingText.indexOf(")")
+                        let textToRemove = typingText.slice(i, reminderEnd+1)
+                        typingText = typingText.replace(textToRemove, "")
+                    }
+                }
+
+                card["typing_text"] = typingText
+
+                // print(typingText)
+
+                cardList.push(card)
             }
-
-            if (currentData['power'] !== undefined &&
-                currentData['toughness'] !== undefined) {
-                typingText += "\n" + currentData['power']
-                typingText += "/" + currentData['toughness']
-                card['power'] = currentData['power']
-                card['toughness'] = currentData['toughness']
-            }
-
-            // typingText += "\n" + currentData['collector_number']
-            card['collector_number'] = currentData['collector_number']
-
-            card["typing_text"] = typingText
-
-            // print(typingText)
-
-            cardList.push(card)
         }
     }
 
@@ -136,7 +201,7 @@ function setup() {
         dashes can be typed with a hyphen
         </pre>`)
 
-    cardList = initializeCardList(scryfall)
+    cardList = initializeCardList(scryfall).sort(sortByCollectorID)
 
     if (scryfall["has_more"]) {
         loadJSON(scryfall["next_page"], gotData)
