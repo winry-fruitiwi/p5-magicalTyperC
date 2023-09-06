@@ -158,14 +158,12 @@ function initializeCardList(data) {
                     if (char === "(") {
                         print(card['name'], "has reminder text")
                         let reminderEnd = typingText.indexOf(")")
-                        let textToRemove = typingText.slice(i, reminderEnd+1)
+                        let textToRemove = typingText.slice(i-1, reminderEnd+1)
                         typingText = typingText.replace(textToRemove, "")
                     }
                 }
 
                 card["typing_text"] = typingText
-
-                // print(typingText)
 
                 cardList.push(card)
             }
@@ -336,6 +334,10 @@ function keyPressed() {
         incorrect.play()
         passage.setIncorrect()
     }
+
+    let accuracyFloat = passage.numCharsCorrect / passage.numCharsTyped
+    let accuracy = round(accuracyFloat * 100)
+    print(accuracy + "%")
 }
 
 // prevents the context menu from showing up, even when the document

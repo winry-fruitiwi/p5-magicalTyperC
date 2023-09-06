@@ -54,6 +54,12 @@ class Passage {
 
         // the horizontal padding for the bounding box
         this.BOUNDING_BOX_PADDINGH = 20
+
+        // number of characters typed
+        this.numCharsTyped = 0
+
+        // number of characters incorrect
+        this.numCharsCorrect = 0
     }
 
     displayCarriageReturn(origin) {
@@ -306,6 +312,9 @@ class Passage {
     setCorrect() {
         this.correctList.push(true)
         this.advance()
+
+        this.numCharsCorrect++
+        this.numCharsTyped++
     }
 
 
@@ -313,6 +322,8 @@ class Passage {
     setIncorrect() {
         this.correctList.push(false)
         this.advance()
+
+        this.numCharsTyped++
     }
 
 
