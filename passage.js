@@ -244,7 +244,7 @@ class Passage {
         noFill()
         noStroke()
 
-        fill(237, 37, 20)
+        fill(237, 37, 30)
 
         // outer shape is clockwise, inner shape is counterclockwise
         beginShape();
@@ -348,7 +348,7 @@ class Passage {
     }
 
 
-    /* from here, there will only be private methods */
+    /* Private Methods */
 
 
     // increase y, reset x

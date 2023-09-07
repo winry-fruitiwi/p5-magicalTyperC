@@ -23,6 +23,9 @@ let correct, incorrect
 let cardImgURL
 let cardImg, cardList = []
 let currentCardIndex = 0
+let accuracy = 0
+let wpm = 0
+const WIDGET_MARGIN = 20
 const CARD_IMG_WIDTH = 340
 const CARD_HORIZONTAL_MARGIN = 50
 
@@ -104,7 +107,6 @@ function initializeCardList(data) {
                     for (let i=0; i<typingText.length; i++) {
                         let char = typingText[i]
                         if (char === "(") {
-                            print(card['name'], "has reminder text")
                             let reminderEnd = typingText.indexOf(")")
                             let textToRemove = typingText.slice(i, reminderEnd+1)
                             typingText = typingText.replace(textToRemove, "")
@@ -156,7 +158,6 @@ function initializeCardList(data) {
                 for (let i=0; i<typingText.length; i++) {
                     let char = typingText[i]
                     if (char === "(") {
-                        print(card['name'], "has reminder text")
                         let reminderEnd = typingText.indexOf(")")
                         let textToRemove = typingText.slice(i-1, reminderEnd+1)
                         typingText = typingText.replace(textToRemove, "")
@@ -234,7 +235,21 @@ function draw() {
             pop()
         }
 
-        displayDebugCorner()
+        textAlign(RIGHT, BOTTOM)
+
+        fill(0, 0, 100)
+
+        if (isNaN(accuracy)) {
+            accuracy = 0
+        }
+
+        text(`${accuracy}%`,
+            width - passage.RIGHT_MARGIN + passage.BOUNDING_BOX_PADDINGH,
+            height-WIDGET_MARGIN)
+
+        textAlign(BOTTOM, LEFT)
+
+        // displayDebugCorner()
     }
 }
 
@@ -336,7 +351,7 @@ function keyPressed() {
     }
 
     let accuracyFloat = passage.numCharsCorrect / passage.numCharsTyped
-    let accuracy = round(accuracyFloat * 100)
+    accuracy = round(accuracyFloat * 100)
     print(accuracy + "%")
 }
 
