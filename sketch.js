@@ -34,10 +34,16 @@ let debugText = "Hi! This hasn't been set yet."
 
 function preload() {
     // request string
-    let req = "https://api.scryfall.com/cards/search?q=set:woe"
+    // let req = "https://api.scryfall.com/cards/search?q=set:woe"
+    let mainSetCode = "dft"
+    let additionalCodes = "e:spg+cn≥84+cn≤103"
+    let bonusSheetCode = "dft"
 
+    let setCode = "https://api.scryfall.com/cards/search?q="
+    setCode +=`(e:${mainSetCode})+or+(e:${bonusSheetCode})+or+(${additionalCodes})`
+
+    scryfall = loadJSON(setCode)
     font = loadFont('data/consola.ttf')
-    scryfall = loadJSON(req)
     correct = loadSound("data/correct.wav")
     incorrect = loadSound("data/incorrect.wav")
 }
@@ -247,6 +253,8 @@ function draw() {
             width - passage.RIGHT_MARGIN + passage.BOUNDING_BOX_PADDINGH,
             height-WIDGET_MARGIN)
 
+        // even though this raises an error, it looks best this way, so I
+        // kept it around. :p
         textAlign(BOTTOM, LEFT)
 
         // displayDebugCorner()
