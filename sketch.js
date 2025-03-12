@@ -49,6 +49,7 @@ function preload() {
 }
 
 function updateCard() {
+    textSize(24)
     passage = new Passage(cardList[currentCardIndex]["typing_text"])
 
     cardImgURL = cardList[currentCardIndex]['png']

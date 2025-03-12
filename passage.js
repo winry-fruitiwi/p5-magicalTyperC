@@ -111,7 +111,7 @@ class Passage {
         let cursor = this.TEXT_START.copy()
 
         // the height of the viewport, measured in lines
-        let viewportHeight = 10
+        let viewportHeight = 9
 
         // number of lines we've typed
         let linesTyped
